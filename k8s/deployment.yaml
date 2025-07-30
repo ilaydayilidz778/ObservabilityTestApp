@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: observability-app
+  labels:
+    app: observability-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: observability-app
+  template:
+    metadata:
+      labels:
+        app: observability-app
+    spec:
+      containers:
+      - name: observability-app
+        image: 10.218.127.100:5000/library/observability-test-app:latest 
+        ports:
+        - containerPort: 8080
+        env:
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "http://otel-lgtm.monitoring.svc.dmstest.local:4317"
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Development"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
